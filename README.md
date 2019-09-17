@@ -108,6 +108,13 @@ WebView组件没有上拉加载更多功能
 
 #### mjHeaderStyle
 mjHeaderStyle需要指定一个对象，通过这个对象来的属性来设置下拉刷新的样式， 以下是这个对象属性详细介绍
+
+
+| 属性名 | 值 | 说明 | 备注 |
+| --- | --- | --- | --- |
+| headerType | normal<br>gif<br>gifTop | normal普通样式的下拉刷新。<br>gif带有动画的下拉刷新，动画在左边。<br>gifTop带有动画的下拉刷新, 动画在顶部 | 1. 当指定值为 gif gifTop 时, 必须在iOS项目Images.xcassets文件夹下添加动画图片并且设置gifImages属性(下面有介绍) |
+|  |  |  |  |
+
 ```js
 /**
  * 下拉刷新的样式类型, 如果不设置改属性, 默认为 normal 样式
