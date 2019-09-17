@@ -1,6 +1,6 @@
 ### 功能
 1. MJRefresh在RN中的拓展
-2. 为RN的默认的ScrollView、FlatList、SectionList以及WebView等可滑动组件提供新属性来实现下拉刷新, 上拉加载更多
+2. 为RN的ScrollView、FlatList、SectionList以及WebView等可滑动组件提供新属性来实现下拉刷新, 上拉加载更多
 3. 提供在RN中实现自定义MJRefresh的header和footer属性
 
 ### 配置
