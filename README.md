@@ -3,21 +3,23 @@
 2. 为RN的ScrollView、FlatList、SectionList以及WebView等可滑动组件提供新属性来实现下拉刷新, 上拉加载更多
 3. 提供在RN中实现自定义MJRefresh的header和footer属性
 
-### 配置
+### iOS配置
 #### 1.安装MJRefresh
 如果项目使用pod来管理iOS第三方依赖库，则在Podfile文件中添加以下代码：
 ```bash
 pod 'MJRefresh', '~> 3.1.15.7'
 ```
 然后执行： **pod install**
-如果是手动引入MJRefresh，只要将MJRefresh文件夹引入到项目中
+如果是手动引入MJRefresh，将MJRefresh文件夹引入到项目中，[MJRefresh库地址](https://github.com/CoderMJLee/MJRefresh)
 
 #### 2.引入拓展文件
 将本库中的 **ios/ReactNativeMJRefresh** 路径下的文件引入到iOS项目中。
 
+* * *
+
 通过以上两步即可完成配置，接下来即可在RN中愉快的使用MJRefresh了
 
-### 在RN端的使用
+### RN端的使用
 #### 下拉刷新
 ##### 在ScrollView中的使用
 这里指包含ScrollView、FlatList、SectionList等可以滑动组件的使用。在这些组件中新增了以下属性用于控制下拉刷新：
@@ -131,7 +133,7 @@ mjHeaderStyle需要指定一个对象，通过这个对象来的属性来设置�
 | 属性名 | 含义 | 值 | 说明 | 备注 |
 | --- | --- | --- | --- | --- |
 | footerType | 上拉加载更多组件的类型 | autoNormal<br>autoGif<br>backNormal<br>backGif<br> | **autoNormal** 上拉组件紧贴在ScrollView内容后面, 没有拖拽时显示是否放手刷新状态, 拖拽过程没有图片, 加载中的状态显示菊花<br>**autoGif** 上拉组件紧贴在ScrollView内容后面, 没有拖拽时显示是否放手刷新状态, 自定义加载中动画<br> **backNormal** 上拉组件隐藏在ScrollView组件的底部, 加载完成后会回弹出ScrollView组件以外 有拖拽时的状态提示, 有拖拽时的自定义图片, 有加载中的菊花<br>**backGif** 上拉组件隐藏在ScrollView组件的底部, 加载完成后会回弹出ScrollView组件以外 自定义各种状态下动画 |  |
-| indicatorType | 加载状态时的菊花样式 | white<br>whiteLarge<br>gray<br> | **white** 白色样式的小菊花<br>**whiteLarge** 白色样式的大菊花<br>**gray**灰色样式的小菊花 | 1. 只有footerType为 autoNormal backNormal 时有效<br>2. 如果不指定, 默认样式则为gray |
+| indicatorType | 加载状态时的菊花样式 | white<br>whiteLarge<br>gray<br> | **white** 白色样式的小菊花<br>**whiteLarge** 白色样式的大菊花<br>**gray** 灰色样式的小菊花 | 1. 只有footerType为 autoNormal backNormal 时有效<br>2. 如果不指定, 默认样式则为gray |
 | arrowImage | 拖拽状态下的指示图片名 | String | Images.xcassets文件夹下的图片名 | 1. 只有footerType为 backNormal 时有效<br> 2. 该属性是指定放入在iOS项目中的Images.xcassets文件夹下面的图片名字, 因此必须在Images.xcassets文件中先添加图片<br>3. 如果不指定, 默认使用箭头图片 |
 | gifImages | 指定各个状态下的动画图片 | Object | Object属性值与headerStyle的gifImages相同 | 1. 只有footerType为 autoGif backGif 类型才有效<br>2. 使用方法同headerType中的gifImages属性的使用方法一致, 具体详情请看之前描述 |
 | labelImageGap |  菊花/箭头/图片 与 文字 的间距 | Number | 如果header类型是 gifTop 则默认值为0, 其他情况下默认值为20 | 单位pt |
