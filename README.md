@@ -110,41 +110,20 @@ WebView组件没有上拉加载更多功能
 mjHeaderStyle需要指定一个对象，通过这个对象来的属性来设置下拉刷新的样式， 以下是这个对象属性详细介绍
 
 
-| 属性名 | 值 | 说明 | 备注 |
-| --- | --- | --- | --- |
-| headerType | normal<br>gif<br>gifTop | normal普通样式的下拉刷新。<br>gif带有动画的下拉刷新，动画在左边。<br>gifTop带有动画的下拉刷新, 动画在顶部 | 1. 当指定值为 gif gifTop 时, 必须在iOS项目Images.xcassets文件夹下添加动画图片并且设置gifImages属性(下面有介绍) |
-|  |  |  |  |
+| 属性名 | 含义 | 值 | 说明 | 备注 |
+| --- | --- | --- | --- | --- |
+| headerType | 下拉刷新的样式类型，如果不设置改属性，默认为 normal样式 | normal<br>gif<br>gifTop | normal普通样式的下拉刷新。<br>gif带有动画的下拉刷新，动画在左边。<br>gifTop带有动画的下拉刷新，动画在顶部 | 1. 当指定值为 gif gifTop 时, 必须在iOS项目Images.xcassets文件夹下添加动画图片并且设置gifImages属性(下面有介绍) |
+| indicatorType | 加载状态时的菊花样式 如果不指定该属性, 默认样式则为gray | white<br>whiteLarge<br>gray | white白色样式的小菊花<br>whiteLarge白色样式的大菊花<br>gray灰色样式的小菊花 | 只有headerType为 normal 时有效 |
+| arrowImage | 拖拽状态下的指示图片名, 如果不指定, 默认使用箭头图片 | String | Images.xcassets文件夹下的图片名 | 1. 只有headerType为 normal 时有效<br>2. 改属性是指定放入在iOS项目中的Images.xcassets文件夹下面的图片名字, 因此必须在Images.xcassets文件中先添加图片 |
+| gifImages | 指定各个状态下的动画图片 | Object | **Object.idle**开始下拉时的状态<br>**Object.pulling**下拉超过刷新阈值, 如果放手则触发刷新的状态<br>**Object.refreshing**正在刷新状态<br>**Object.willRefresh**将要刷新状态<br>**Object.noMoreData**没有更多数据状态(适用于上拉加载更多) | 1. 只有headerType为 gif 时有效<br>2.表示各个状态的属性值都为图片名数组<br>3. 图片名为在iOS项目Images.xcassets文件夹中添加的图片名<br>4.可以不指定状态属性值，如果不指定，这个状态下则无动画 |
+|  |  |  |  |  |
+|  |  |  |  |  |
+
+
+
 
 ```js
-/**
- * 下拉刷新的样式类型, 如果不设置改属性, 默认为 normal 样式
- * 注意:
- *      1. 当制定值为 gif gifTop 时, 必须在iOS项目Images.xcassets文件夹下添加动画图片并且设置gifImages属性(下面有介绍),
- * 值有:
- *      normal      默认值, 普通样式的下拉刷新
- *      gif         带有动画的下拉刷新, 动画在左边
- *      gifTop      带有动画的下拉刷新, 动画在顶部
- */
-headerType: 'normal',
-/**
- * 加载状态时的菊花样式 如果不指定该属性, 默认样式则为gray, 
- * 注意:
- *      1. 只有headerType为 normal 时有效
- * 值有:
- *      white           白色样式的小菊花
- *      whiteLarge      白色样式的大菊花
- *      gray            灰色样式的小菊花 
- */
-indicatorType: 'white',
-/**
- * 拖拽状态下的指示图片名, 如果不指定, 默认使用箭头图片, 
- * 注意: 
- *      1. 只有headerType为 normal 时有效
- *      2. 改属性是指定放入在iOS项目中的Images.xcassets文件夹下面的图片名字, 因此必须在Images.xcassets文件中先添加图片
- * 值为:
- *      Images.xcassets文件夹下的图片名
- */
-arrowImage: 'arrowImg', 
+
 /**
  * 指定各个状态下的动画图片
  *  注意: 
