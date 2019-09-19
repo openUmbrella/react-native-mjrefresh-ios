@@ -5,7 +5,7 @@
 
 ### iOS配置
 #### 1.安装MJRefresh
-如果项目使用pod来管理iOS第三方依赖库，则在Podfile文件中添加以下代码：
+**推荐:** 如果项目使用pod来管理iOS第三方依赖库，则在Podfile文件中添加以下代码：
 ```bash
 pod 'MJRefresh', '~> 3.1.15.7'
 ```
@@ -13,7 +13,21 @@ pod 'MJRefresh', '~> 3.1.15.7'
 如果是手动引入MJRefresh，将MJRefresh文件夹引入到项目中，[MJRefresh库地址](https://github.com/CoderMJLee/MJRefresh)
 
 #### 2.引入拓展文件
+
+##### 当RN版本 < 0.60 时
 将本库中的 **ios/ReactNativeMJRefresh** 路径下的文件引入到iOS项目中。
+
+##### 当RN版本 >= 0.60 时
+将本库中的 **ios/ReactNativeMJRefresh60** 路径下的文件引入到iOS项目中。
+**说明:**
+1. RN在0.60版本之后将WebView组件剥离出去了, 社区推荐使用[react-native-webview](https://www.npmjs.com/package/react-native-webview)代替, 因此本库就针对于react-native-webview的WebView组件进行了MJRefresh拓展
+2. 如果不需要在WebView中使用MJRefresh进行下拉刷新, 可以不引入文件夹中的以下文件:
+```
+RNCWebView+MJRfresh.h
+RNCWebView+MJRfresh.m
+RNCWebViewManager+MJRefresh.h
+RNCWebViewManager+MJRefresh.m
+```
 
 * * *
 
@@ -35,7 +49,7 @@ pod 'MJRefresh', '~> 3.1.15.7'
 设置下拉刷新组件的样式, 后面会详细介绍
 
 例如：
-```
+```jsx
 <FlatList
     enableMJRefresh={true}
     mjRefreshing={this.state.refreshing}
@@ -47,9 +61,11 @@ pod 'MJRefresh', '~> 3.1.15.7'
 ```
 
 ##### 在WebView中的使用
+
+###### 1. 当RN版本<0.60时
 在WebView组件中，需要通过**nativeConfig**属性来添加, **这一点比较特殊, 需要特别关注**
 具体操作如下:
-```
+```jsx
  <WebView
     nativeConfig={{
         props:{
@@ -66,10 +82,41 @@ pod 'MJRefresh', '~> 3.1.15.7'
     }}
  />
 ```
-**特别说明：**
-在WebView刷新网页时，如果不设置mjRefreshing、onMJRefresh属性。那么当网页加在完成后，下拉刷新也会结束。如果指定了onMJRefresh属性，那么下拉刷新的结束状态就要我们通过mjRefreshing来自己控制了。
 
-WebView组件没有上拉加载更多功能
+###### 2. 当RN版本>=0.60时
+使用方式与ScrollView的使用方式一致。
+例如：
+```jsx
+import {WebView} from 'react-native-webview';
+
+// ....
+
+<WebView
+    style={{flex: 1, marginTop: 88}}
+    source={{uri: 'https://www.baidu.com'}}
+    // 是否开启下拉刷新
+    enableMJRefresh: true,
+    // 决定是否开启刷新，是否结束刷新 如果为true，则显示正在刷新状态，如果为false，则显示默认的状态
+    mjRefreshing: this.state.refreshing,
+    // 下拉刷新触发时，的回调
+    onMJRefresh: this.loadData,
+    mjHeaderStyle: {
+        // 设置属性
+    }
+/>
+
+```
+
+**特别说明：**
+
+* * *
+
+1. 在WebView刷新网页时，如果不设置mjRefreshing、onMJRefresh属性。那么当网页加在完成后，下拉刷新也会结束。如果指定了onMJRefresh属性，那么下拉刷新的结束状态就要我们通过mjRefreshing来自己控制了。
+
+2. WebView组件没有上拉加载更多功能
+
+* * *
+
 
 #### 上拉加载更多
 与下拉刷新功能使用的组件范围相同。只要是可以滑动的组件，都可以使用。 通过以下属性来控制上拉加载更多：
@@ -90,7 +137,7 @@ WebView组件没有上拉加载更多功能
 设置上拉加载更多组件的样式, 后面会详细介绍
 
 例如：
-```
+```jsx
 <FlatList
     enableMJLoadMore={this.state.enableLoadMore}
     mjLoadingMore={this.state.loadingMore}
