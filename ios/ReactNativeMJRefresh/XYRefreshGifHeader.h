@@ -6,7 +6,14 @@
 //  Copyright © 2019 opu. All rights reserved.
 //
 
+
+#if __has_include(<MJRefresh/MJRefreshGifHeader.h>)
+#import <MJRefresh/MJRefreshGifHeader.h>
+#elif __has_include("MJRefreshGifHeader.h")
 #import "MJRefreshGifHeader.h"
+#else
+#import "MJRefresh/MJRefreshGifHeader.h"
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 

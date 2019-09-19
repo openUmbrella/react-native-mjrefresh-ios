@@ -6,7 +6,13 @@
 //  Copyright © 2019 opu. All rights reserved.
 //
 
+#if __has_include(<React/RCTScrollView.h>)
+#import <React/RCTScrollView.h>
+#elif __has_include("RCTScrollView.h")
 #import "RCTScrollView.h"
+#else
+#import "React/RCTScrollView.h"
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 

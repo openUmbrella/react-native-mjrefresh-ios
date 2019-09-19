@@ -7,9 +7,23 @@
 //
 
 #import "RCTWebView+MJRfresh.h"
-#import "React/RCTLog.h"
-#import "MJRefresh/MJRefresh.h"
 #import "XYRefreshGifHeader.h"
+
+#if __has_include(<React/RCTLog.h>)
+#import <React/RCTLog.h>
+#elif __has_include("RCTLog.h")
+#import "RCTLog.h"
+#else
+#import "React/RCTLog.h"
+#endif
+
+#if __has_include(<MJRefresh/MJRefresh.h>)
+#import <MJRefresh/MJRefresh.h>
+#elif __has_include("MJRefresh.h")
+#import "MJRefresh.h"
+#else
+#import "MJRefresh/MJRefresh.h"
+#endif
 
 @interface RCTWebView ()
 

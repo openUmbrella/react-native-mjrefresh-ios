@@ -6,7 +6,13 @@
 //  Copyright © 2019 opu. All rights reserved.
 //
 
+#if __has_include(<React/RCTWebViewManager.h>)
+#import <React/RCTWebViewManager.h>
+#elif __has_include("RCTWebViewManager.h")
 #import "RCTWebViewManager.h"
+#else
+#import "React/RCTWebViewManager.h"
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
