@@ -9,11 +9,12 @@
 
 #if __has_include(<react-native-webview/RNCWebView.h>)
 #import <react-native-webview/RNCWebView.h>
-#elif __has_include("react-native-webview/RNCWebView.h")
-#import "react-native-webview/RNCWebView.h"
-#else __has_include("RNCWebView.h")
+#elif __has_include("RNCWebView.h")
 #import "RNCWebView.h"
+#else
+#import "react-native-webview/RNCWebView.h"
 #endif
+
 
 
 NS_ASSUME_NONNULL_BEGIN
