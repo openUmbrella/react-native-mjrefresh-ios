@@ -72,27 +72,6 @@
   
 }
 
-////    XYLog(@"%d-----%d",self.stateLabel.hidden,self.lastUpdatedTimeLabel.hidden);
-//if (!self.stateLabel.hidden) {
-//  NSInteger labelH = self.stateLabel.xy_textHeight + gapHeight;
-//  // 设置frame
-//  self.gifView.mj_h = imageH;
-//  self.stateLabel.frame = CGRectMake(0, imageH + self.labelLeftInset, self.mj_w, labelH);
-//  self.mj_h = imageH + labelH  + self.labelLeftInset;
-//  XYLog(@"imageH: %f-----labelH: %ld ---- self.labelLeftInset: %f", imageH,labelH,self.labelLeftInset);
-//  //      self.mj_h = 100;
-//  //      self.mj_h = imageH + labelH + 30;
-//
-//  self.lastUpdatedTimeLabel.frame = CGRectZero;
-//}
-//else if (!self.lastUpdatedTimeLabel.hidden){
-//  CGFloat labelH = self.lastUpdatedTimeLabel.xy_textHeight + gapHeight;
-//  // 设置frame
-//  self.mj_h = imageH + labelH + self.labelLeftInset;
-//  self.gifView.mj_h = imageH;
-//  self.lastUpdatedTimeLabel.frame = CGRectMake(0, imageH + self.labelLeftInset, self.mj_w, labelH);
-//}
-
 @end
 
 @implementation UILabel(XYRefresh)
@@ -153,7 +132,7 @@
   NSString *rString = rgbArr[0];
   NSString *gString = rgbArr[1];
   NSString *bString = rgbArr[2];
-  float r, g, b;
+  float r = 0.0, g = 0.0, b = 0.0;
   if (!(
         [[NSScanner scannerWithString:rString] scanFloat:&r] &&
         [[NSScanner scannerWithString:gString] scanFloat:&g] &&

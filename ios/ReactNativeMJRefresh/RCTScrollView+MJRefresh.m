@@ -122,41 +122,6 @@
   if ([[self getMJHeader] isKindOfClass:[MJRefreshGifHeader class]]) {
     MJRefreshGifHeader *mjHeader = (MJRefreshGifHeader *)[self getMJHeader];
     [self settingMJGifImage:imageState component:mjHeader];
-//    NSArray *keys = imageState.allKeys;
-//    for (NSString *key in keys) {
-//      if ([imageState[key] isKindOfClass:[NSArray class]]) {
-//        NSArray *images = imageState[key];
-//        NSMutableArray *imagesArr = [NSMutableArray arrayWithCapacity:images.count];
-//        for (NSString *imageName in images) {
-//          UIImage *image = [UIImage imageNamed:imageName];
-//          if (image) {
-//            [imagesArr addObject: image];
-//          }else{
-//            // 没有在 Images.xcassets 中找到
-//            RCTLogWarn(@"%@", [NSString stringWithFormat:@"%@ does not exist in Images.xcassets folder of iOS Project", imageName]);
-//          }
-//
-//        }
-//        if ([key isEqualToString:@"idle"]) {
-//          [mjHeader setImages:imagesArr forState:MJRefreshStateIdle];
-//        }
-//        else if ([key isEqualToString:@"pulling"]){
-//          [mjHeader setImages:imagesArr forState:MJRefreshStatePulling];
-//        }
-//        else if ([key isEqualToString:@"refreshing"]){
-//          [mjHeader setImages:imagesArr forState:MJRefreshStateRefreshing];
-//        }
-//        else if ([key isEqualToString:@"willRefresh"]){
-//          [mjHeader setImages:imagesArr forState:MJRefreshStateWillRefresh];
-//        }
-//        else if ([key isEqualToString:@"noMoreData"]){
-//          [mjHeader setImages:imagesArr forState:MJRefreshStateNoMoreData];
-//        }
-//      } else {
-//        // 值类型不是数组
-//        RCTLogWarn(@"%@", [NSString stringWithFormat:@"the value of %@ is not array", key]);
-//      }
-//    }
   }
 }
 -(void)settingMJHeaderLastUpdatedTimeLabelVisible: (NSNumber *) hide {
