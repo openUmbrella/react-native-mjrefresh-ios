@@ -7,6 +7,7 @@
 //
 
 #import "RCTScrollView+MJRefresh.h"
+#import "XYRefreshGifHeader.h"
 
 #if __has_include(<React/RCTLog.h>)
 #import <React/RCTLog.h>
@@ -25,7 +26,7 @@
 #endif
 
 
-#import "XYRefreshGifHeader.h"
+
 
 @interface RCTScrollView ()
 
@@ -525,9 +526,6 @@ static const char XYMJScrollViewEnableRefreshKey = '\0';
   if (enableMJRefresh == YES) {
     // 添加下拉刷新
     NSString *headerType = self.mjHeaderStyle[@"headerType"];
-    if (headerType == nil) {
-      return;
-    }
     if ([headerType isEqualToString:@"gif"]) {
       // gif类型
       scrollView.mj_header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshAction)];
@@ -589,13 +587,13 @@ static const char XYMJScrollViewHeaderStyleKey = '\0';
   [self settingMJHeaderStyle];
 }
 -(NSDictionary *)mjHeaderStyle{
-  NSDictionary * dict = objc_getAssociatedObject(self, &XYMJScrollViewHeaderStyleKey);
-  if (dict == nil) {
+  NSDictionary * headerStyle = objc_getAssociatedObject(self, &XYMJScrollViewHeaderStyleKey);
+  if (headerStyle == nil) {
     return @{
              @"headerType": @"normal"
              };
   }
-  return dict;
+  return headerStyle;
 }
 
 #pragma mark - 上拉加载更多属性

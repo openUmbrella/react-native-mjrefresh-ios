@@ -349,9 +349,6 @@
     }
     // 添加下拉刷新
     NSString *headerType = self.mjHeaderStyle[@"headerType"];
-    if (headerType == nil) {
-      return;
-    }
     if ([headerType isEqualToString:@"gif"]) {
       // gif类型
       scrollView.mj_header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshAction)];
