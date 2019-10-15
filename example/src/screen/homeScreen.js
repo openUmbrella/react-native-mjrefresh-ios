@@ -210,7 +210,7 @@ export default class HomeScreen extends Component {
             this.setState({
                 refresing: false
             });
-        }, 1500);
+        }, 1000);
     }
     // 渲染组件
     render() {

@@ -24,27 +24,13 @@ export default class ListViewDemoContianer extends Component {
             loadingMore: false,
             isLoadAll: false,
             list: [],
-            loadinglist: [],
-            idlelist: []
         };
     }
     componentDidMount() {
         this.setState({
             refreshing: true
         });
-        let arr = [];
-        let arr1 = [];
-        for (let i = 1; i <= 8; i++) {
-            arr.push(`wsfloading00${i}`);
-        }
-        for (let i = 1; i <= 6; i++) {
-            arr1.push(`pulling00${i}`);
-        }
-
-        this.setState({
-            loadinglist: arr,
-            idlelist: arr1
-        });
+   
     }
     loadDataList = () => {
         
@@ -65,7 +51,7 @@ export default class ListViewDemoContianer extends Component {
                 isLoadAll: arr.length > 18
             });
             console.log('刷新结束:');
-        }, 1000);
+        }, 500);
     };
     loadMoreData = () => {
         this.setState({
@@ -85,7 +71,7 @@ export default class ListViewDemoContianer extends Component {
                 isLoadAll: newlist.length > 20
             });
             console.log('加载更多结束:');
-        }, 1000);
+        }, 600);
     };
     // 渲染组件
     render() {
