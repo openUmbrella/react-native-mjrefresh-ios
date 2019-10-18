@@ -27,13 +27,20 @@ export default class ListViewDemoContianer extends Component {
         };
     }
     componentDidMount() {
-        this.setState({
-            refreshing: true
-        });
+        // this.setState({
+        //     refreshing: true
+        // });
+
+        // 加载数据
+        this.loadDataList();
+
+        setTimeout(() => {
+            this.loadDataList();
+        }, 6000);
    
     }
     loadDataList = () => {
-        
+        console.log('调用了请求方法');
         this.setState({
             refreshing: true
         });
@@ -51,7 +58,7 @@ export default class ListViewDemoContianer extends Component {
                 isLoadAll: arr.length > 18
             });
             console.log('刷新结束:');
-        }, 500);
+        }, 10);
     };
     loadMoreData = () => {
         this.setState({

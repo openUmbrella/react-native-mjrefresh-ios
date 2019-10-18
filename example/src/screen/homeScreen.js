@@ -15,6 +15,7 @@ import {
     Image,
 } from 'react-native';
 
+let count = 1;
 export default class HomeScreen extends Component {
 
     // 构造函数
@@ -173,7 +174,7 @@ export default class HomeScreen extends Component {
                     }
                 },
 
-            ]
+            ],
         };
         
     }
@@ -190,7 +191,10 @@ export default class HomeScreen extends Component {
                             this.props.navigation.push('ListDemo', {title: item.title, footerStyles: item.styles});
                         }
                         else if (type === 'webview') {
-                            this.props.navigation.push('WebView', {title: item.title, headerStyles: item.styles});
+                            this.props.navigation.push('WebView', {title: item.title, headerStyles: item.styles, webType: 'UIWebView'});
+                        }
+                        else if (type === 'wkwebview') {
+                            this.props.navigation.push('WebView', {title: item.title, headerStyles: item.styles, webType: 'WKWebView'});
                         }
                     }}>
                         <Text style={styles.btntext}>{item.title}</Text>
@@ -201,7 +205,7 @@ export default class HomeScreen extends Component {
         );
     }
     onRefresh = () => {
-        console.log('刷新了！！');
+        console.log('刷新了',count++);
         // 必须先改变刷新状态标识
         this.setState({
             refresing: true
@@ -228,17 +232,23 @@ export default class HomeScreen extends Component {
                 {
                     this.renderDemoCell(refreshList, 'header')
                 }
-                <View style={styles.header}>
+                <View style={[styles.header, {backgroundColor: '#7B68EE'}]}>
                     <Text style={styles.headertxt}>上拉加载更多</Text>
                 </View>
                 {
                     this.renderDemoCell(loadMoreList, 'footer')
                 }
-                <View style={styles.header}>
+                <View style={[styles.header, {backgroundColor: '#4169E1'}]}>
                     <Text style={styles.headertxt}>WebView</Text>
                 </View>
                 {
                     this.renderDemoCell(webViewList, 'webview')
+                }
+                <View style={[styles.header, {backgroundColor: '#20B2AA'}]}>
+                    <Text style={styles.headertxt}>react-native-webview</Text>
+                </View>
+                {
+                    this.renderDemoCell(webViewList, 'wkwebview')
                 }
             </ScrollView>
         );

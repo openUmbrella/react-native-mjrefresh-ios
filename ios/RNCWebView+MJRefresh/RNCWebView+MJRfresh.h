@@ -7,12 +7,12 @@
 //
 
 
-#if __has_include(<react-native-webview/RNCWebView.h>)
-#import <react-native-webview/RNCWebView.h>
+#if __has_include(<RNCWebView/RNCWebView.h>)
+#import <RNCWebView/RNCWebView.h>
 #elif __has_include("RNCWebView.h")
 #import "RNCWebView.h"
 #else
-#import "react-native-webview/RNCWebView.h"
+#import "RNCWebView/RNCWebView.h"
 #endif
 
 

@@ -26,13 +26,12 @@
 #endif
 
 
-
-
 @interface RCTScrollView ()
 
 @property (nonatomic, strong) NSDictionary *headerJSKey2OCMethod;
 
 @property (nonatomic, strong) NSDictionary *footerJSKey2OCMethod;
+
 
 @end
 
@@ -473,12 +472,17 @@
 #pragma mark - 刷新方法
 -(void)refreshAction{
   // 执行刷新方法
-  !self.onMJRefresh ?: self.onMJRefresh(@{});
+  // 如果是用户拖拽时触发的回调才将事件发送到RN端
+  if (!XYMJBeginRefreshAnimating && !self.mjRefreshing) {
+    !self.onMJRefresh ?: self.onMJRefresh(@{});
+  }
   
 }
 -(void)loadMoreAction{
-  
-  !self.onMJLoadMore ?: self.onMJLoadMore(@{});
+  // 如果是用户拖拽时触发的回调才将事件发送到RN端
+  if (!self.mjLoadingMore) {
+    !self.onMJLoadMore ?: self.onMJLoadMore(@{});
+  }
 }
 
 
@@ -518,6 +522,7 @@ static const char XYMJScrollViewEnableRefreshKey = '\0';
 }
 
 static const char XYMJScrollViewRefreshingKey = '\0';
+static BOOL XYMJBeginRefreshAnimating = NO;
 -(void)setMjRefreshing:(BOOL)mjRefreshing{
   objc_setAssociatedObject(self, &XYMJScrollViewRefreshingKey, @(mjRefreshing), OBJC_ASSOCIATION_RETAIN);
   UIScrollView *scrollView = [self getScrollView];
@@ -526,7 +531,12 @@ static const char XYMJScrollViewRefreshingKey = '\0';
       [scrollView.mj_header endRefreshing];
     }
     else if (mjRefreshing == YES && scrollView.mj_header.refreshing == NO){
-      [scrollView.mj_header beginRefreshing];
+      // XYMJBeginRefreshAnimating 这个变量用于标识 当前是否处于开始刷新动画中, 用于在refreshAction方法中做判断
+      // BUG描述: 因为在RN端,要进行刷新操作时, mjRefreshing设置为true,同时请求数据. 如果请求数据的时间很短(小于开始动画时间0.25s).当请求完成后, 设置mjRefreshing为false, 这时就会导致触发refreshAction时,将回调传到RN去, 导致反复刷新
+      XYMJBeginRefreshAnimating = YES;
+      [scrollView.mj_header beginRefreshingWithCompletionBlock:^{
+        XYMJBeginRefreshAnimating = NO;
+      }];
     }
   }
 }
@@ -560,6 +570,7 @@ static const char XYMJScrollViewHeaderStyleKey = '\0';
   }
   return headerStyle;
 }
+
 
 #pragma mark - 上拉加载更多属性
 static const char XYMJScrollViewEnableLoadMoreKey = '\0';

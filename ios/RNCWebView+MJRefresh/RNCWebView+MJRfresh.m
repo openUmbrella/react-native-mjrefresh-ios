@@ -6,7 +6,7 @@
 //  Copyright © 2019 opu. All rights reserved.
 //
 
-#import "RCTWebView+MJRfresh.h"
+#import "RNCWebView+MJRfresh.h"
 #import "XYRefreshGifHeader.h"
 
 #if __has_include(<React/RCTLog.h>)
@@ -25,7 +25,10 @@
 #import "MJRefresh/MJRefresh.h"
 #endif
 
-@interface RCTWebView ()
+
+
+
+@interface RNCWebView ()
 
 @property (nonatomic, strong) NSDictionary *headerJSKey2OCMethod;
 
@@ -33,7 +36,46 @@
 
 @end
 
-@implementation RCTWebView (MJRfresh)
+@implementation RNCWebView (MJRfresh)
+
+// 因为 RNCWebView 在这个方法中才初始化 webView,
+// 因此现要通过runtime方法现执行主类的方法后再设置MJRefresh
+-(void)didMoveToWindow{
+  // 先执行主类的方法
+  [self xy_invokeOriginalMethodWithSelector:_cmd];
+  
+  // 再执行自定义操作 设置MJRefresh
+  [self settingMJRefresh:self.enableMJRefresh];
+  
+  // 确保参数都设置正确
+  self.mjRefreshing = self.mjRefreshing;
+  
+}
+
+/**
+ 调用主类的方法
+
+ @param target 对象
+ @param selector 方法
+ */
+- (void)xy_invokeOriginalMethodWithSelector:(SEL)selector {
+  // Get the class method list
+  uint count;
+  Method *list = class_copyMethodList([self class], &count);
+  
+  // Find and call original method .
+  for ( int i = count - 1 ; i >= 0; i--) {
+    Method method = list[i];
+    SEL name = method_getName(method);
+    IMP imp = method_getImplementation(method);
+    if (name == selector) {
+      ((void (*)(id, SEL))imp)(self, name);
+      break;
+    }
+  }
+  free(list);
+}
+
 #pragma mark - 样式名-方法映射表
 
 /**
@@ -273,8 +315,9 @@
   UIWebView * webview = [self valueForKeyPath:@"_webView"];
   if (webview) {
     return webview.scrollView;
-  } else {
-    RCTLogError(@"%@", [NSString stringWithFormat:@"ohh, shit! can't get WebView"]);
+  }
+  else {
+//    RCTLogError(@"%@", [NSString stringWithFormat:@"ohh, shit! can't get WebView"]);
     return nil;
   }
 }
@@ -287,25 +330,9 @@
 
 #pragma mark - 刷新方法
 
--(void)refreshAction{
-  // 执行刷新方法
-  if (self.onMJRefresh) {
-    self.onMJRefresh(@{});
-  }
-  // 重新刷新
-  UIWebView * webview = [self valueForKeyPath:@"_webView"];
-  [webview reload];
-  
-}
-
-#pragma mark - 下拉刷新属性
-
-static const char XYMJEnableRefreshKey = '\0';
--(void)setEnableMJRefresh:(BOOL)enableMJRefresh{
-  objc_setAssociatedObject(self, &XYMJEnableRefreshKey,
-                           @(enableMJRefresh), OBJC_ASSOCIATION_RETAIN);
+-(void)settingMJRefresh: (BOOL)enableMJRefresh {
   UIScrollView *scrollView = [self getScrollView];
-
+  
   if (enableMJRefresh == YES) {
     // 如果js端监听了 onMJRefresh 方法, 那么自动停止刷新的操作就由js端来处理
     if (self.onMJRefresh == nil) {
@@ -343,12 +370,42 @@ static const char XYMJEnableRefreshKey = '\0';
     [self settingMJHeaderStyle];
   }else {
     // 移除下拉刷新
-   scrollView.mj_header = nil;
+    scrollView.mj_header = nil;
     if (self.onLoadingFinishOrigin) {
       // 加载完成的Block 还原回来
       [self setValue:self.onLoadingFinishOrigin forKeyPath:@"_onLoadingFinish"];
     }
   }
+}
+
+-(void)refreshAction{
+//  // 执行刷新方法
+//  if (self.onMJRefresh) {
+//    self.onMJRefresh(@{});
+//  }
+//  // 重新刷新
+//  UIWebView * webview = [self valueForKeyPath:@"_webView"];
+//  [webview reload];
+  // 执行刷新方法
+  if (self.onMJRefresh) {
+    // 如果是用户拖拽时触发的回调才将事件发送到RN端
+    if (!self.mjRefreshing) {
+       self.onMJRefresh(@{});
+    }
+  }else {
+    // 如果 RN端没有指定 onMJRefresh 属性(方法), 那么就在原生端调用刷新
+    UIWebView * webview = [self valueForKeyPath:@"_webView"];
+    [webview reload];
+  }
+  
+}
+
+#pragma mark - setter/getter 下拉刷新属性
+
+static const char XYMJEnableRefreshKey = '\0';
+-(void)setEnableMJRefresh:(BOOL)enableMJRefresh{
+  objc_setAssociatedObject(self, &XYMJEnableRefreshKey,
+                           @(enableMJRefresh), OBJC_ASSOCIATION_RETAIN);
   
 }
 
@@ -361,9 +418,10 @@ static const char XYMJRefreshingKey = '\0';
   objc_setAssociatedObject(self, &XYMJRefreshingKey, @(mjRefreshing), OBJC_ASSOCIATION_RETAIN);
   UIScrollView *scrollView = [self getScrollView];
   if (scrollView.mj_header) {
-    if (mjRefreshing == NO) {
+    if (mjRefreshing == NO && scrollView.mj_header.refreshing == YES) {
       [scrollView.mj_header endRefreshing];
-    }else{
+    }
+    else if (mjRefreshing == YES && scrollView.mj_header.refreshing == NO){
       [scrollView.mj_header beginRefreshing];
     }
   }
@@ -387,16 +445,16 @@ static const char XYMJScrollViewHeaderStyleKey = '\0';
 -(void)setMjHeaderStyle:(NSDictionary *)mjHeaderStyle{
   objc_setAssociatedObject(self, &XYMJScrollViewHeaderStyleKey, mjHeaderStyle, OBJC_ASSOCIATION_RETAIN);
   // 设置mj_header样式
-  [self settingMJHeaderStyle];
+  // [self settingMJHeaderStyle];
 }
 -(NSDictionary *)mjHeaderStyle{
-  NSDictionary * headerStyle = objc_getAssociatedObject(self, &XYMJScrollViewHeaderStyleKey);
-  if (headerStyle == nil) {
+  NSDictionary * dict = objc_getAssociatedObject(self, &XYMJScrollViewHeaderStyleKey);
+  if (dict == nil) {
     return @{
              @"headerType": @"normal"
              };
   }
-  return headerStyle;
+  return dict;
 }
 
 static const char XYMJOnLoadingFinishOriginKey = '\0';

@@ -7,7 +7,15 @@
 import React, { Component } from 'react';
 import { ScrollView, WebView, Text, StyleSheet, View } from 'react-native';
 
+import WKWebView from 'react-native-webview';
+
 export default class WebViewDemoContainer extends Component {
+    
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: navigation.getParam('title','效果')
+        };
+    }
     // 构造函数
     constructor(props) {
         super(props);
@@ -17,19 +25,7 @@ export default class WebViewDemoContainer extends Component {
         };
     }
     componentDidMount() {
-        let arr = [];
-        let arr1 = [];
-        for (let i = 1; i <= 8; i++) {
-            arr.push(`wsfloading00${i}`);
-        }
-        for (let i = 1; i <= 6; i++) {
-            arr1.push(`pulling00${i}`);
-        }
 
-        this.setState({
-            loadinglist: arr,
-            idlelist: arr1
-        });
     }
     loadData = data => {
         console.log('传过来的参数:', data.nativeEvent);
@@ -37,35 +33,73 @@ export default class WebViewDemoContainer extends Component {
         this.setState({
             refreshing: true
         });
-        // 网络请求
-        setTimeout(() => {
-            this.setState({
-                refreshing: false
-            });
-            console.log('请求结束:');
-        }, 3000);
+        this.refs['webview'].reload();
+        // 做其他额外的操作...
+    };
+    onError = () => {
+        this.setState({
+            refreshing: false
+        });
+    };
+    onLoad = () => {
+        console.log('啦啦啦啦, 网页开始加载中');
+    };
+    onLoadEnd = () => {
+        this.setState({
+            refreshing: false,
+        });
+        console.log('网页加载完毕');
     };
     // 渲染组件
     render() {
+        let webType = this.props.navigation.getParam('webType');
+        let { refreshing } = this.state;
         return (
             <View style={styles.container}>
-                {/* RN提供的WebView */}
-                <WebView
-                    ref={'webview'}
-                    source={{ uri: 'https://www.baidu.com' }}
-                    javaScriptEnabled={true}
-                    domStorageEnabled={true}
-                    scalesPageToFit={false}
-                    allowsInlineMediaPlayback={true}
-                    dataDetectorTypes={'none'}
-                    // 注意 指定值的特殊位置
-                    nativeConfig={{
-                        props: {
-                            enableMJRefresh: true,
-                            mjHeaderStyle: this.props.navigation.getParam('headerStyles')
-                        }
-                    }}
-                />
+                {
+                    webType === 'UIWebView' ? (
+                        // RN提供的WebView
+                        <WebView
+                            ref={'webview'}
+                            source={{ uri: 'https://www.baidu.com' }}
+                            javaScriptEnabled={true}
+                            domStorageEnabled={true}
+                            scalesPageToFit={false}
+                            allowsInlineMediaPlayback={true}
+                            dataDetectorTypes={'none'}
+                            onLoad={this.onLoad}
+                            onLoadEnd={this.onLoadEnd}
+                            onError={this.onError}
+                            // 注意 指定值的特殊位置
+                            nativeConfig={{
+                                props: {
+                                    enableMJRefresh: true,
+                                    // mjRefreshing: refreshing,
+                                    // onMJRefresh: this.loadData,
+                                    mjHeaderStyle: this.props.navigation.getParam('headerStyles')
+                                }
+                            }}
+                        />
+                    ) : (
+                        // react-native-webview提供的WKWebView
+                        <WKWebView
+                            ref={'webview'}
+                            source={{ uri: 'https://www.baidu.com' }}
+                            javaScriptEnabled={true}
+                            domStorageEnabled={true}
+                            scalesPageToFit={false}
+                            allowsInlineMediaPlayback={true}
+                            dataDetectorTypes={'none'}
+                            onLoad={this.onLoad}
+                            onLoadEnd={this.onLoadEnd}
+                            onError={this.onError}
+                            enableMJRefresh={true}
+                            mjRefreshing={refreshing}
+                            onMJRefresh={this.loadData}
+                            mjHeaderStyle={this.props.navigation.getParam('headerStyles')}
+                        />
+                    )
+                }
             </View>
         );
     }
