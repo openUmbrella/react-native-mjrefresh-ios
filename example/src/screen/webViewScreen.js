@@ -42,7 +42,7 @@ export default class WebViewDemoContainer extends Component {
         });
     };
     onLoad = () => {
-        console.log('啦啦啦啦, 网页开始加载中');
+        console.log('网页开始加载中');
     };
     onLoadEnd = () => {
         this.setState({
@@ -75,7 +75,7 @@ export default class WebViewDemoContainer extends Component {
                                 props: {
                                     enableMJRefresh: true,
                                     // mjRefreshing: refreshing,
-                                    // onMJRefresh: this.loadData,
+                                    // onMJRefresh: this.loadData, // 如果指定了onRefresh方法, 那么刷新结束状态就由开发者自己改变
                                     mjHeaderStyle: this.props.navigation.getParam('headerStyles')
                                 }
                             }}
@@ -95,7 +95,7 @@ export default class WebViewDemoContainer extends Component {
                             onError={this.onError}
                             enableMJRefresh={true}
                             mjRefreshing={refreshing}
-                            onMJRefresh={this.loadData}
+                            onMJRefresh={this.loadData} // 如果指定了onRefresh方法, 那么刷新结束状态就由开发者自己改变
                             mjHeaderStyle={this.props.navigation.getParam('headerStyles')}
                         />
                     )
