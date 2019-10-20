@@ -32,6 +32,7 @@
 
 @property (nonatomic, strong) NSDictionary *footerJSKey2OCMethod;
 
+@property (nonatomic, assign) BOOL XYMJBeginRefreshAnimating;
 
 @end
 
@@ -472,8 +473,8 @@
 #pragma mark - 刷新方法
 -(void)refreshAction{
   // 执行刷新方法
-  // 如果是用户拖拽时触发的回调才将事件发送到RN端
-  if (!XYMJBeginRefreshAnimating && !self.mjRefreshing) {
+//   如果是用户拖拽时触发的回调才将事件发送到RN端
+  if (!self.XYMJBeginRefreshAnimating && !self.mjRefreshing) {
     !self.onMJRefresh ?: self.onMJRefresh(@{});
   }
   
@@ -522,7 +523,6 @@ static const char XYMJScrollViewEnableRefreshKey = '\0';
 }
 
 static const char XYMJScrollViewRefreshingKey = '\0';
-static BOOL XYMJBeginRefreshAnimating = NO;
 -(void)setMjRefreshing:(BOOL)mjRefreshing{
   objc_setAssociatedObject(self, &XYMJScrollViewRefreshingKey, @(mjRefreshing), OBJC_ASSOCIATION_RETAIN);
   UIScrollView *scrollView = [self getScrollView];
@@ -533,9 +533,14 @@ static BOOL XYMJBeginRefreshAnimating = NO;
     else if (mjRefreshing == YES && scrollView.mj_header.refreshing == NO){
       // XYMJBeginRefreshAnimating 这个变量用于标识 当前是否处于开始刷新动画中, 用于在refreshAction方法中做判断
       // BUG描述: 因为在RN端,要进行刷新操作时, mjRefreshing设置为true,同时请求数据. 如果请求数据的时间很短(小于开始动画时间0.25s).当请求完成后, 设置mjRefreshing为false, 这时就会导致触发refreshAction时,将回调传到RN去, 导致反复刷新
-      XYMJBeginRefreshAnimating = YES;
+      self.XYMJBeginRefreshAnimating = YES;
+      // 在App启动,第一次调用时,有可能会不走refreshAction以及下面的RefreshingWithCompletionBlock,导致XYMJBeginRefreshAnimating一直是true, 导致拖拽时, 没办法结束刷新
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(MJRefreshFastAnimationDuration * 2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.XYMJBeginRefreshAnimating = NO;
+      });
+      __weak typeof(self) weakSelf = self;
       [scrollView.mj_header beginRefreshingWithCompletionBlock:^{
-        XYMJBeginRefreshAnimating = NO;
+           weakSelf.XYMJBeginRefreshAnimating = NO;
       }];
     }
   }
@@ -571,7 +576,13 @@ static const char XYMJScrollViewHeaderStyleKey = '\0';
   return headerStyle;
 }
 
-
+const static char XYMJBeginRefreshAnimatingKey = '\0';
+-(void)setXYMJBeginRefreshAnimating:(BOOL)XYMJBeginRefreshAnimating{
+  objc_setAssociatedObject(self, &XYMJBeginRefreshAnimatingKey, @(XYMJBeginRefreshAnimating), OBJC_ASSOCIATION_RETAIN);
+}
+-(BOOL)XYMJBeginRefreshAnimating{
+  return [(NSNumber *)objc_getAssociatedObject(self, &XYMJBeginRefreshAnimatingKey) boolValue];
+}
 #pragma mark - 上拉加载更多属性
 static const char XYMJScrollViewEnableLoadMoreKey = '\0';
 -(void)setEnableMJLoadMore:(BOOL)enableMJLoadMore{
