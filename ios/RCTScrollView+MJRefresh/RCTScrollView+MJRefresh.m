@@ -34,6 +34,8 @@
 
 @property (nonatomic, assign) BOOL XYMJBeginRefreshAnimating;
 
+@property (nonatomic, assign) BOOL XYMJBeginLoadMoreAnimating;
+
 @end
 
 
@@ -481,7 +483,7 @@
 }
 -(void)loadMoreAction{
   // 如果是用户拖拽时触发的回调才将事件发送到RN端
-  if (!self.mjLoadingMore) {
+  if (!self.XYMJBeginLoadMoreAnimating && !self.mjLoadingMore) {
     !self.onMJLoadMore ?: self.onMJLoadMore(@{});
   }
 }
@@ -524,7 +526,11 @@ static const char XYMJScrollViewEnableRefreshKey = '\0';
 
 static const char XYMJScrollViewRefreshingKey = '\0';
 -(void)setMjRefreshing:(BOOL)mjRefreshing{
+  if (mjRefreshing == self.mjRefreshing) {
+    return;
+  }
   objc_setAssociatedObject(self, &XYMJScrollViewRefreshingKey, @(mjRefreshing), OBJC_ASSOCIATION_RETAIN);
+  
   UIScrollView *scrollView = [self getScrollView];
   if (scrollView.mj_header) {
     if (mjRefreshing == NO && scrollView.mj_header.refreshing == YES) {
@@ -619,13 +625,27 @@ static const char XYMJScrollViewEnableLoadMoreKey = '\0';
 
 static const char XYMJScrollViewLoadingMoreKey = '\0';
 - (void)setMjLoadingMore:(BOOL)mjLoadingMore{
+  if (mjLoadingMore == self.mjLoadingMore) {
+    return;
+  }
   objc_setAssociatedObject(self, &XYMJScrollViewLoadingMoreKey, @(mjLoadingMore), OBJC_ASSOCIATION_RETAIN);
   UIScrollView *scrollView = [self getScrollView];
   if (scrollView.mj_footer) {
-    if (mjLoadingMore == NO) {
+    if (mjLoadingMore == NO && scrollView.mj_footer.refreshing == YES) {
       [scrollView.mj_footer endRefreshing];
-    }else{
-      [scrollView.mj_footer beginRefreshing];
+    }
+    else if (mjLoadingMore == YES && scrollView.mj_footer.refreshing == NO) {
+      // XYMJBeginRefreshAnimating 这个变量用于标识 当前是否处于开始刷新动画中, 用于在refreshAction方法中做判断
+      // BUG描述: 因为在RN端,要进行刷新操作时, mjRefreshing设置为true,同时请求数据. 如果请求数据的时间很短(小于开始动画时间0.25s).当请求完成后, 设置mjRefreshing为false, 这时就会导致触发refreshAction时,将回调传到RN去, 导致反复刷新
+      self.XYMJBeginLoadMoreAnimating = YES;
+      // 在App启动,第一次调用时,有可能会不走refreshAction以及下面的RefreshingWithCompletionBlock,导致XYMJBeginRefreshAnimating一直是true, 导致拖拽时, 没办法结束刷新
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(MJRefreshFastAnimationDuration * 2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.XYMJBeginLoadMoreAnimating = NO;
+      });
+      __weak typeof(self) weakSelf = self;
+      [scrollView.mj_footer beginRefreshingWithCompletionBlock:^{
+           weakSelf.XYMJBeginLoadMoreAnimating = NO;
+      }];
     }
   }
 }
@@ -637,9 +657,6 @@ static const char XYMJScrollViewLoadAllKey = '\0';
 -(void)setMjLoadAll:(BOOL)mjLoadAll{
   objc_setAssociatedObject(self, &XYMJScrollViewLoadAllKey, @(mjLoadAll), OBJC_ASSOCIATION_RETAIN);
   UIScrollView *scrollView = [self getScrollView];
-  if(!scrollView) {
-    
-  }
   if (scrollView.mj_footer) {
     if (mjLoadAll == YES) {
       [scrollView.mj_footer endRefreshingWithNoMoreData];
@@ -674,6 +691,13 @@ static const char XYMJScrollViewOnLoadMoreKey = '\0';
 }
 -(RCTBubblingEventBlock)onMJLoadMore{
   return objc_getAssociatedObject(self, &XYMJScrollViewOnLoadMoreKey);
+}
+static const char XYMJBeginLoadMoreAnimatingKey = '\0';
+-(void)setXYMJBeginLoadMoreAnimating:(BOOL)XYMJBeginLoadMoreAnimating{
+  objc_setAssociatedObject(self, &XYMJBeginLoadMoreAnimatingKey, @(XYMJBeginLoadMoreAnimating), OBJC_ASSOCIATION_RETAIN);
+}
+-(BOOL)XYMJBeginLoadMoreAnimating{
+  return [(NSNumber *)objc_getAssociatedObject(self, &XYMJBeginLoadMoreAnimatingKey) boolValue];
 }
 
 @end
