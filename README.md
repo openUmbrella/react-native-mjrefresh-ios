@@ -1,7 +1,8 @@
 ### 功能
 1. MJRefresh在RN中的拓展
-2. 为RN的ScrollView、FlatList、SectionList以及WebView等可滑动组件提供新属性来实现下拉刷新, 上拉加载更多
-3. 提供在RN中实现自定义MJRefresh的header和footer属性
+2. 为RN的ScrollView、FlatList、SectionList等可滑动组件提供新属性来实现下拉刷新, 上拉加载更多
+3. 一行代码为WebView组件提供刷新网页功能
+4. 提供在RN中实现自定义MJRefresh的header和footer属性
 
 ### iOS配置
 #### 1.安装MJRefresh
@@ -14,20 +15,40 @@ pod 'MJRefresh', '~> 3.1.15.7'
 
 #### 2.引入拓展文件
 
-##### 当RN版本 < 0.60 时
-将本库中的 **ios/ReactNativeMJRefresh** 路径下的文件引入到iOS项目中。
+安装库：
+```
+yarn add react-native-refresh-ios
+```
+或
+```
+npm install --save react-native-refresh-ios
+```
+或
+直接download下载，找到对应文件引入到iOS项目中
 
-##### 当RN版本 >= 0.60 时
-将本库中的 **ios/ReactNativeMJRefresh60** 路径下的文件引入到iOS项目中。
-**说明:**
-1. RN在0.60版本之后将WebView组件剥离出去了, 社区推荐使用[react-native-webview](https://www.npmjs.com/package/react-native-webview)代替, 因此本库就针对于react-native-webview的WebView组件进行了MJRefresh拓展
-2. 如果不需要在WebView中使用MJRefresh进行下拉刷新, 可以不引入文件夹中的以下文件:
+通过npm或yarn安装的，需要在项目根目录下的**node_modules/react-native-mjrefresh-ios/ios**路径下根据需要将对应文件夹引入iOS项目中
+
+在本库中的ios文件夹下有如下文件夹:
 ```
-RNCWebView+MJRfresh.h
-RNCWebView+MJRfresh.m
-RNCWebViewManager+MJRefresh.h
-RNCWebViewManager+MJRefresh.m
+MJRefreshExtension          mjRefresh框架的拓展文件
+RCTScrollView+MJRefresh     ScrollView,FlatList,SectionList等可滑动组件的拓展文件
+RCTWebView+MJRefresh        WebView组件的拓展文件
+RNCWebView+MJRefresh        react-native-webview中的WebView组件拓展文件
 ```
+根据你需要拓展MJRefresh到对应组件，选择对应文件夹拖入到你的项目中。
+注意：MJRefreshExtension文件夹必须拖入
+**例如：**
+1. 如果想让ScrollView，FlatList具备MJRefresh刷新能力，那么需要将**MJRefreshExtension**和**RCTScrollView+MJRefresh**文件夹引入到iOS项目中
+2. 如果想让WebView具备MJRefresh下拉刷新能力，那么需要将**MJRefreshExtension**和**RCTWebView+MJRefresh**文件夹引入到iOS项目中
+3. 如果想让ScrollView和WebView都具备MJRefresh下拉刷新能力， 则需要将**MJRefreshExtension**、**RCTScrollView+MJRefresh**、**RCTWebView+MJRefresh**或**RNCWebView+MJRefresh**文件夹引入到iOS项目中
+
+
+* * *
+**特别说明：**
+
+由于iOS13以后，苹果已经不允许再使用UIWebView了，同时React Native团队也推荐我们使用社区提供的[react-native-webview](https://www.npmjs.com/package/react-native-webview)代替React-Native中的WebView。事实上， 在React-Native 0.60以后的版本已经将WebView组件给剥离出去了。
+
+因此，在项目中如果使用了react-native-webview库，要使得其WebView具备MJRefresh下拉刷新能力，就需要将**RNCWebView+MJRefresh**文件夹引入到iOS项目中
 
 * * *
 
@@ -44,65 +65,77 @@ RNCWebViewManager+MJRefresh.m
 下拉刷新时触发的回调
 
 3. **mjRefreshing**
-是否显示刷新状态 如果为true，则显示正在刷新状态，如果为false，则显示初始的状态
+是否显示刷新状态 如果为true，则为正在刷新状态，如果为false，则为初始的状态
 4. **mjHeaderStyle**
-设置下拉刷新组件的样式, 后面会详细介绍
+设置下拉刷新头的样式, 后面会详细介绍
 
 例如：
 ```jsx
 <FlatList
+    // 是否开启下拉刷新
     enableMJRefresh={true}
+    // 指定刷新状态
     mjRefreshing={this.state.refreshing}
+    // 拖拽刷新时，触发的回调
     onMJRefresh={this.loadDataList}
+    // 设置header样式
     mjHeaderStyle={{
-        // 设置属性
+        // 指定属性
     }}
 />
 ```
+使用方法与React Native提供的[RefreshControl](https://reactnative.cn/docs/refreshcontrol.html)组件的使用方法完全一致
 
 ##### 在WebView中的使用
 
-###### 1. 当RN版本<0.60时
+###### 1. React Native提供的WebView
+
 在WebView组件中，需要通过**nativeConfig**属性来添加, **这一点比较特殊, 需要特别关注**
 具体操作如下:
 ```jsx
  <WebView
+    source={{uri: 'https://www.baidu.com'}}
     nativeConfig={{
         props:{
                 // 是否开启下拉刷新
                 enableMJRefresh: true,
-                // 决定是否开启刷新，是否结束刷新 如果为true，则显示正在刷新状态，如果为false，则显示默认的状态
-                mjRefreshing: this.state.refreshing,
-                // 下拉刷新触发时，的回调
-                onMJRefresh: this.loadData,
-                mjHeaderStyle: {
-                    // 设置属性
-                }
+                // 指定刷新状态
+                // mjRefreshing: this.state.refreshing,
+                // 拖拽刷新时，触发的回调
+                // onMJRefresh: this.reloadData,
+                // 设置header样式
+                // mjHeaderStyle: {
+                //    // 指定属性
+                // }
             }
     }}
  />
 ```
+**如上，只需要一行代码即可实现网页的下拉刷新功能。**
 
-###### 2. 当RN版本>=0.60时
-使用方式与ScrollView的使用方式一致。
+同时，本库也提供像为ScrollView组件提供的属性一样提供**mjRefreshing**、**onMJRefresh**和**mjHeaderStyle**属性。
+
+
+###### 2. react-native-webview提供的WebView
+
+为WebView提供了与ScrollView一致的属性。
 例如：
 ```jsx
-import {WebView} from 'react-native-webview';
+import { WebView } from 'react-native-webview';
 
 // ....
 
 <WebView
-    style={{flex: 1, marginTop: 88}}
     source={{uri: 'https://www.baidu.com'}}
     // 是否开启下拉刷新
     enableMJRefresh: true,
-    // 决定是否开启刷新，是否结束刷新 如果为true，则显示正在刷新状态，如果为false，则显示默认的状态
-    mjRefreshing: this.state.refreshing,
+    // 指定刷新状态
+    // mjRefreshing: this.state.refreshing,
     // 下拉刷新触发时，的回调
-    onMJRefresh: this.loadData,
-    mjHeaderStyle: {
-        // 设置属性
-    }
+    // onMJRefresh: this.loadData,
+    // mjHeaderStyle: {
+    //    // 指定样式属性
+    // }
 />
 
 ```
@@ -111,9 +144,9 @@ import {WebView} from 'react-native-webview';
 
 * * *
 
-1. 在WebView刷新网页时，如果不设置mjRefreshing、onMJRefresh属性。那么当网页加在完成后，下拉刷新也会结束。如果指定了onMJRefresh属性，那么下拉刷新的结束状态就要我们通过mjRefreshing来自己控制了。
-
-2. WebView组件没有上拉加载更多功能
+1. 在WebView刷新网页时，如果不设置mjRefreshing、onMJRefresh属性。那么当网页加载完成后，下拉刷新也会结束。如果指定了onMJRefresh属性，那么下拉刷新的结束状态就要开发者通过mjRefreshing自己控制了。
+2. 当触发刷新时，WebView的**onLoad**、**onLoadEnd**也会被触发
+3. WebView组件没有上拉加载更多功能
 
 * * *
 
