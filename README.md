@@ -4,6 +4,9 @@
 3. 一行代码为WebView组件提供刷新网页功能
 4. 提供在RN中实现自定义MJRefresh的header和footer属性
 
+### 示例截图
+![screen-shoot](https://raw.githubusercontent.com/openUmbrella/react-native-mjrefresh-ios/master/example/shotscreen/normal1-min.gif)![screen-shoot](https://raw.githubusercontent.com/openUmbrella/react-native-mjrefresh-ios/master/example/shotscreen/normal2-min.gif)![screen-shoot](https://raw.githubusercontent.com/openUmbrella/react-native-mjrefresh-ios/master/example/shotscreen/normal3-min.gif)![screen-shoot](https://raw.githubusercontent.com/openUmbrella/react-native-mjrefresh-ios/master/example/shotscreen/normal4-min.gif)![screen-shoot](https://raw.githubusercontent.com/openUmbrella/react-native-mjrefresh-ios/master/example/shotscreen/footer1-min.gif)![screen-shoot](https://raw.githubusercontent.com/openUmbrella/react-native-mjrefresh-ios/master/example/shotscreen/footer2-min.gif)![screen-shoot](https://raw.githubusercontent.com/openUmbrella/react-native-mjrefresh-ios/master/example/shotscreen/footer3-min.gif)![screen-shoot](https://raw.githubusercontent.com/openUmbrella/react-native-mjrefresh-ios/master/example/shotscreen/footer4-min.gif)![screen-shoot](https://raw.githubusercontent.com/openUmbrella/react-native-mjrefresh-ios/master/example/shotscreen/webview-min.gif)
+
 ### iOS配置
 #### 1.安装MJRefresh
 **推荐:** 如果项目使用pod来管理iOS第三方依赖库，则在Podfile文件中添加以下代码：
