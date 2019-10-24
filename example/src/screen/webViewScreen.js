@@ -28,7 +28,6 @@ export default class WebViewDemoContainer extends Component {
 
     }
     loadData = data => {
-        console.log('传过来的参数:', data.nativeEvent);
 
         this.setState({
             refreshing: true
@@ -94,8 +93,8 @@ export default class WebViewDemoContainer extends Component {
                             onLoadEnd={this.onLoadEnd}
                             onError={this.onError}
                             enableMJRefresh={true}
-                            mjRefreshing={refreshing}
-                            onMJRefresh={this.loadData} // 如果指定了onRefresh方法, 那么刷新结束状态就由开发者自己改变
+                            // mjRefreshing={refreshing}
+                            // onMJRefresh={this.loadData} // 如果指定了onRefresh方法, 那么刷新结束状态就由开发者自己改变
                             mjHeaderStyle={this.props.navigation.getParam('headerStyles')}
                         />
                     )
