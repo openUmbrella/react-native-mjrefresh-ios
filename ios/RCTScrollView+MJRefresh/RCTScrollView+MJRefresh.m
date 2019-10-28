@@ -631,7 +631,7 @@ static const char XYMJScrollViewLoadingMoreKey = '\0';
   objc_setAssociatedObject(self, &XYMJScrollViewLoadingMoreKey, @(mjLoadingMore), OBJC_ASSOCIATION_RETAIN);
   UIScrollView *scrollView = [self getScrollView];
   if (scrollView.mj_footer) {
-    if (mjLoadingMore == NO && scrollView.mj_footer.refreshing == YES) {
+    if (mjLoadingMore == NO && scrollView.mj_footer.refreshing == YES && self.mjLoadAll == NO) {
       [scrollView.mj_footer endRefreshing];
     }
     else if (mjLoadingMore == YES && scrollView.mj_footer.refreshing == NO) {
@@ -660,13 +660,14 @@ static const char XYMJScrollViewLoadAllKey = '\0';
   if (scrollView.mj_footer) {
     if (mjLoadAll == YES) {
       [scrollView.mj_footer endRefreshingWithNoMoreData];
-    }else{
+    }
+    else {
       [scrollView.mj_footer resetNoMoreData];
     }
   }
 }
 -(BOOL)mjLoadAll{
-  return objc_getAssociatedObject(self, &XYMJScrollViewLoadAllKey);
+  return [(NSNumber *)objc_getAssociatedObject(self, &XYMJScrollViewLoadAllKey) boolValue];
 }
 static const char XYMJScrollViewFooterStyleKey = '\0';
 -(void)setMjFooterStyle:(NSDictionary *)mjFooterStyle{
