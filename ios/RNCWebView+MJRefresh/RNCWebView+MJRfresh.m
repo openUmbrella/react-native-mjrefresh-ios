@@ -348,6 +348,9 @@
 
 -(void)settingMJRefresh: (BOOL)enableMJRefresh {
   UIScrollView *scrollView = [self getScrollView];
+  if (!scrollView) {
+    return;
+  }
   
   if (enableMJRefresh == YES) {
     // 如果js端监听了 onMJRefresh 方法, 那么自动停止刷新的操作就由js端来处理
@@ -422,7 +425,7 @@ static const char XYMJEnableRefreshKey = '\0';
 -(void)setEnableMJRefresh:(BOOL)enableMJRefresh{
   objc_setAssociatedObject(self, &XYMJEnableRefreshKey,
                            @(enableMJRefresh), OBJC_ASSOCIATION_RETAIN);
-  
+  [self settingMJRefresh: enableMJRefresh];
 }
 
 -(BOOL)enableMJRefresh{

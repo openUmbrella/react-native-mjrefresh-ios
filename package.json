@@ -1,6 +1,6 @@
 {
   "name": "react-native-mjrefresh-ios",
-  "version": "0.0.6",
+  "version": "0.1.2",
   "description": "the extension of MJRefresh in React Native",
   "main": "index.js",
   "scripts": {
