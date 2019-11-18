@@ -11,7 +11,11 @@ export default stackContainer = createStackNavigator({
     Home: {
         screen: HomeScreen,
         navigationOptions: {
-            title: '演示'
+            title: '演示',
+            // headerStyle: {
+            //     backgroundColor: '#10f9fa'
+            // }
+            
         }
     },
     ListDemo: {

@@ -1333,7 +1333,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-example/Pods-example-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-example/Pods-example-resources.sh",
 				"${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -1342,7 +1342,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-example/Pods-example-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-example/Pods-example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		98C17945D46CEAEF727DDD0C /* [CP] Check Pods Manifest.lock */ = {
