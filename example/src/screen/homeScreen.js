@@ -157,21 +157,29 @@ export default class HomeScreen extends Component {
                     title: '自定义样式',
                     screen: 'WebView',
                     styles: {
-                        headerType: 'normal',
-                        stateTitle: {
-                            idle: '下拉刷新吧吧吧',
-                            pulling: '你放手，我就刷新',
-                            refreshing: '正在玩命加载中',
+                        // headerType: 'normal',
+                        // stateTitle: {
+                        //     idle: '下拉刷新吧吧吧',
+                        //     pulling: '你放手，我就刷新',
+                        //     refreshing: '正在玩命加载中',
+                        // },
+                        // stateLabelStyle: {
+                        //     color: '#FF00FF',
+                        //     fontSize: 16
+                        // },
+                        // timeLabelStyle: {
+                        //     color: '#008000',
+                        // },
+                        // labelImageGap: 40,
+                        headerType: 'gifTop',
+                        gifImages: {
+                            idle: ['dropdown_anim__0001', 'dropdown_anim__0002','dropdown_anim__0003','dropdown_anim__0004'],
+                            pulling: ['dropdown_anim__0001', 'dropdown_anim__0002','dropdown_anim__0003','dropdown_anim__0004'],
+                            loading: ['dropdown_loading_01','dropdown_loading_02','dropdown_loading_03'],
                         },
-                        stateLabelStyle: {
-                            color: '#FF00FF',
-                            fontSize: 16
-                        },
-                        timeLabelStyle: {
-                            color: '#008000',
-                        },
-                        labelImageGap: 40
+                        hideTimeLabel: true,
                     }
+                    
                 },
 
             ],
