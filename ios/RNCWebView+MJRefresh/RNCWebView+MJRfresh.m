@@ -53,7 +53,6 @@
 // 因此现要通过runtime方法现执行主类的方法后再设置MJRefresh
 -(void)xy_didMoveToWindow{
   // 先执行主类的方法
-//  [self xy_invokeOriginalMethodWithSelector:_cmd];
   [self xy_didMoveToWindow];
   // 再执行自定义操作 设置MJRefresh
   [self settingMJRefresh:self.enableMJRefresh];
@@ -61,30 +60,6 @@
   [self settingMJRefreshing:self.mjRefreshing];
   
 }
-
-/**
- 调用主类的方法
-
- @param target 对象
- @param selector 方法
- */
-//- (void)xy_invokeOriginalMethodWithSelector:(SEL)selector {
-//  // Get the class method list
-//  uint count;
-//  Method *list = class_copyMethodList([self class], &count);
-//
-//  // Find and call original method .
-//  for ( int i = count - 1 ; i >= 0; i--) {
-//    Method method = list[i];
-//    SEL name = method_getName(method);
-//    IMP imp = method_getImplementation(method);
-//    if (name == selector) {
-//      ((void (*)(id, SEL))imp)(self, name);
-//      break;
-//    }
-//  }
-//  free(list);
-//}
 
 #pragma mark - 样式名-方法映射表
 
