@@ -414,9 +414,25 @@
 
 -(void)settingMJHeaderStyle{
   UIScrollView *scrollView = [self getScrollView];
-  if (scrollView.mj_header == nil || self.mjHeaderStyle == nil) {
-    return;
-  }
+  // 添加下拉刷新
+    NSString *headerType = self.mjHeaderStyle[@"headerType"];
+    if ([headerType isEqualToString:@"gif"]) {
+      // gif类型
+      scrollView.mj_header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshAction)];
+    }
+    
+    else if ([headerType isEqualToString:@"gifTop"]) {
+      // gifTop类型
+      XYRefreshGifHeader *gifHeader = [XYRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshAction)];
+      // 这里引用类型,主要是为了首次布局时计算header的高度
+      gifHeader.style = self.mjHeaderStyle;
+      scrollView.mj_header = gifHeader;
+    }
+    else{
+      // 默认类型 normal
+      scrollView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshAction)];
+    }
+  
   // NSLog(@"header的样式:%@",self.mjHeaderStyle);
   [self executeMethodWithDictionary:self.mjHeaderStyle map:self.headerJSKey2OCMethod];
 }
@@ -477,6 +493,7 @@
   // 执行刷新方法
 //   如果是用户拖拽时触发的回调才将事件发送到RN端
   if (!self.XYMJBeginRefreshAnimating && !self.mjRefreshing) {
+    // XYLog(@"结束刷新");
     !self.onMJRefresh ?: self.onMJRefresh(@{});
   }
   
@@ -496,21 +513,6 @@ static const char XYMJScrollViewEnableRefreshKey = '\0';
                            @(enableMJRefresh), OBJC_ASSOCIATION_RETAIN);
   UIScrollView *scrollView = [self getScrollView];
   if (enableMJRefresh == YES) {
-    // 添加下拉刷新
-    NSString *headerType = self.mjHeaderStyle[@"headerType"];
-    if ([headerType isEqualToString:@"gif"]) {
-      // gif类型
-      scrollView.mj_header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshAction)];
-    }
-    
-    else if ([headerType isEqualToString:@"gifTop"]) {
-      // gifTop类型
-      scrollView.mj_header = [XYRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshAction)];
-    }
-    else{
-      // 默认类型 normal
-      scrollView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshAction)];
-    }
     // 设置样式
     [self settingMJHeaderStyle];
     
@@ -526,6 +528,7 @@ static const char XYMJScrollViewEnableRefreshKey = '\0';
 
 static const char XYMJScrollViewRefreshingKey = '\0';
 -(void)setMjRefreshing:(BOOL)mjRefreshing{
+  // XYLog(@"开始比较mjRefreshing:%d------self.mjRefreshing:%d",mjRefreshing, self.mjRefreshing)
   if (mjRefreshing == self.mjRefreshing) {
     return;
   }
@@ -534,19 +537,25 @@ static const char XYMJScrollViewRefreshingKey = '\0';
   UIScrollView *scrollView = [self getScrollView];
   if (scrollView.mj_header) {
     if (mjRefreshing == NO && scrollView.mj_header.refreshing == YES) {
-      [scrollView.mj_header endRefreshing];
+       // XYLog(@"结束刷新");
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(MJRefreshFastAnimationDuration * 1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [scrollView.mj_header endRefreshing];
+      });
     }
     else if (mjRefreshing == YES && scrollView.mj_header.refreshing == NO){
       // XYMJBeginRefreshAnimating 这个变量用于标识 当前是否处于开始刷新动画中, 用于在refreshAction方法中做判断
       // BUG描述: 因为在RN端,要进行刷新操作时, mjRefreshing设置为true,同时请求数据. 如果请求数据的时间很短(小于开始动画时间0.25s).当请求完成后, 设置mjRefreshing为false, 这时就会导致触发refreshAction时,将回调传到RN去, 导致反复刷新
       self.XYMJBeginRefreshAnimating = YES;
       // 在App启动,第一次调用时,有可能会不走refreshAction以及下面的RefreshingWithCompletionBlock,导致XYMJBeginRefreshAnimating一直是true, 导致拖拽时, 没办法结束刷新
-      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(MJRefreshFastAnimationDuration * 2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(MJRefreshFastAnimationDuration * 3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.XYMJBeginRefreshAnimating = NO;
+        // XYLog(@"GCD回调设置XYMJBeginRefreshAnimating=NO");
       });
       __weak typeof(self) weakSelf = self;
+      // XYLog(@"开始刷新");
       [scrollView.mj_header beginRefreshingWithCompletionBlock:^{
            weakSelf.XYMJBeginRefreshAnimating = NO;
+          // XYLog(@"开始刷新后的回调(进入刷新状态后的回调)");
       }];
     }
   }

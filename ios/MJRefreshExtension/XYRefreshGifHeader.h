@@ -15,9 +15,12 @@
 #import "MJRefresh/MJRefreshGifHeader.h"
 #endif
 
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface XYRefreshGifHeader : MJRefreshGifHeader
+
+@property (nonatomic, strong) NSDictionary *style;
 
 @end
 

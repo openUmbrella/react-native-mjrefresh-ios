@@ -98,13 +98,13 @@
     MJRefreshNormalHeader *mjheader = (MJRefreshNormalHeader *)[self getMJHeader];
     if (mjheader) {
       if ([type isEqualToString:@"whiteLarge"]){
-        mjheader.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+        mjheader.loadingView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
       }
       else if ([type isEqualToString:@"white"]){
-        mjheader.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
+        mjheader.loadingView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
       } else{
         // 默认是 灰色
-        mjheader.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+        mjheader.loadingView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
       }
     }
   }
@@ -364,7 +364,11 @@
     
     else if ([headerType isEqualToString:@"gifTop"]) {
       // gifTop类型
-      scrollView.mj_header = [XYRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshAction)];
+      XYRefreshGifHeader *gifHeader = [XYRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshAction)];
+      // 这里引用类型,主要是为了首次布局时计算header的高度
+      gifHeader.style = self.mjHeaderStyle;
+      scrollView.mj_header = gifHeader;
+      
     }
     else{
       // 默认类型 normal

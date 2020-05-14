@@ -2,13 +2,19 @@
 //  XYRefreshGifHeader.m
 //  ReactNativeMJRefresh
 //
-//  Created by jeff.Li on 2019/9/11.
+//  Created by jeff.Li on  2019/9/11.
 //  Copyright © 2019 opu. All rights reserved.
 //
 
 #import "XYRefreshGifHeader.h"
 
 @interface XYRefreshGifHeader ()
+
+@property (nonatomic, assign) CGFloat imageH;
+
+@property (nonatomic, assign) CGFloat stateH;
+
+@property (nonatomic, assign) CGFloat timeH;
 
 
 @end
@@ -25,51 +31,99 @@
   [super placeSubviews];
   // 以竖向排列控件
   if (self.gifView.constraints.count) return;
-  // 如果没有指定图片,就使用父类的布局
-  if (self.gifView.image == nil) return;
 
   self.gifView.frame = self.bounds;
   self.gifView.contentMode = UIViewContentModeCenter;
+  [self relayouView];
+  
+}
+
+- (void)relayouView{
+  
+  if (![_style[@"headerType"] isEqualToString:@"gifTop"]) {
+      return;
+  }
   // 定义高度余量
   NSInteger gapHeight = 6;
-  // 图片的高度
-  NSInteger imageH = self.gifView.image.size.height + gapHeight;
-
-  // 0.状态标签和时间标签都没有
-  if (self.stateLabel.hidden && self.lastUpdatedTimeLabel.hidden) {
-    // 如果图片的高度小于MJ的初始高度, 则使用MJ的高度
-    if (imageH > MJRefreshHeaderHeight) {
-      self.mj_h = imageH;
-      self.gifView.mj_h = imageH;
+  if (!self.imageH) {
+    NSArray *idleimageArr = _style[@"gifImages"][@"idle"];
+    if (!idleimageArr || idleimageArr.count == 0) {
+      return;
     }
-  }
-  // 1. 状态标签和时间标签都有
-  else if (!self.stateLabel.hidden && !self.lastUpdatedTimeLabel.hidden) {
-    NSInteger stateH = self.stateLabel.xy_textHeight + gapHeight;
-    NSInteger timeH = self.lastUpdatedTimeLabel.xy_textHeight + gapHeight;
-    // 设置frame
-    self.gifView.mj_h = imageH;
-    self.mj_h = imageH + stateH + timeH + self.labelLeftInset;
-    self.stateLabel.frame = CGRectMake(0, imageH + self.labelLeftInset, self.mj_w, stateH);
-    self.lastUpdatedTimeLabel.frame = CGRectMake(0, imageH + self.labelLeftInset + stateH, self.mj_w, timeH);
-  }
-  // 2. 时间标签和状态标签有一个显示
-  else  {
-    UILabel *showLabel = nil;
-    if (!self.stateLabel.hidden) {
-      showLabel = self.stateLabel;
-    }else{
-      showLabel = self.lastUpdatedTimeLabel;
+    // 获取图片高度
+    NSString *idle0 = idleimageArr.firstObject;
+    UIImage *idleImage = [UIImage imageNamed:idle0];
+    if (!idleImage) {
+      return;
     }
-    // 特别说明: 为什么不用 CGFloat ? 因为用了会崩! EXC_BAD_ACCESS 😂😂
-    NSInteger showLabelH = showLabel.xy_textHeight + gapHeight;
     
-    self.gifView.mj_h = imageH;
-    showLabel.frame = CGRectMake(0, imageH + self.labelLeftInset, self.mj_w, showLabelH);
-    self.mj_h = imageH + showLabelH  + self.labelLeftInset;
-    
+    // 图片的高度
+    NSInteger imageH = idleImage.size.height + gapHeight;
+    self.imageH = imageH;
   }
-  
+  if (!self.stateH) {
+    NSInteger stateFontSize = [(NSNumber *)_style[@"stateLabelStyle"][@"fontSize"] integerValue] ?: 14; // 默认是14
+    NSString *stateText = _style[@"stateTitle"][@"idle"] ?: @"下拉可以刷新";
+    CGFloat stateH = [stateText boundingRectWithSize: CGSizeMake(MAXFLOAT, MAXFLOAT)
+       options:NSStringDrawingUsesLineFragmentOrigin
+    attributes:@{
+      NSFontAttributeName: [UIFont systemFontOfSize: stateFontSize]
+    }
+      context:nil].size.height;
+    self.stateH = stateH + gapHeight;
+  }
+  if (!self.timeH) {
+    NSInteger fontSize = [(NSNumber *)_style[@"timeLabelStyle"][@"fontSize"] integerValue] ?: 14;
+    NSString *text = @"时间";
+    CGFloat height = [text boundingRectWithSize: CGSizeMake(MAXFLOAT, MAXFLOAT)
+       options:NSStringDrawingUsesLineFragmentOrigin
+    attributes:@{
+      NSFontAttributeName: [UIFont systemFontOfSize: fontSize]
+    }
+      context:nil].size.height;
+    self.timeH = height + gapHeight;
+  }
+    
+    // 判断状态
+    BOOL hideStateLabel = [(NSNumber *)_style[@"hideStateLabel"] boolValue];
+    BOOL hideTimeLabel = [(NSNumber *)_style[@"hideTimeLabel"] boolValue];
+    
+    // 0.状态标签和时间标签都没有
+    if (hideStateLabel && hideTimeLabel) {
+      // 如果图片的高度小于MJ的初始高度, 则使用MJ的高度
+      if (self.imageH > MJRefreshHeaderHeight) {
+        self.mj_h = self.imageH;
+        self.gifView.mj_h = self.imageH;
+      }
+    }
+    // 1. 状态标签和时间标签都有
+    else if (!hideStateLabel && !hideTimeLabel) {
+      // 设置frame
+      self.gifView.mj_h = self.imageH;
+      self.stateLabel.frame = CGRectMake(0, self.imageH + self.labelLeftInset, self.mj_w, self.stateH);
+      self.lastUpdatedTimeLabel.frame = CGRectMake(0, self.imageH + self.labelLeftInset + self.stateH, self.mj_w, self.timeH);
+      self.mj_h = self.imageH + self.stateH + self.timeH + self.labelLeftInset;
+       // 要设置y值, 否着首次拖拽时布局会出问题
+      self.mj_y = - self.mj_h - self.ignoredScrollViewContentInsetTop;
+    }
+    // 2. 时间标签和状态标签有一个显示
+    else  {
+      CGFloat height = 0;
+      UILabel *showLabel = nil;
+      if (!hideStateLabel) {
+        height = self.stateH;
+        showLabel = self.stateLabel;
+      } else {
+        height = self.timeH;
+        showLabel = self.lastUpdatedTimeLabel;
+      }
+      
+      self.gifView.mj_h = self.imageH;
+      showLabel.frame = CGRectMake(0, self.imageH + self.labelLeftInset, self.mj_w, height);
+      self.mj_h = self.imageH + height  + self.labelLeftInset;
+      // 要设置y值, 否着首次拖拽时布局会出问题
+      self.mj_y = - self.mj_h - self.ignoredScrollViewContentInsetTop;
+    }
 }
 
 @end
