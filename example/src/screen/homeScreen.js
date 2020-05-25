@@ -246,12 +246,6 @@ export default class HomeScreen extends Component {
                 {
                     this.renderDemoCell(loadMoreList, 'footer')
                 }
-                <View style={[styles.header, {backgroundColor: '#4169E1'}]}>
-                    <Text style={styles.headertxt}>WebView</Text>
-                </View>
-                {
-                    this.renderDemoCell(webViewList, 'webview')
-                }
                 <View style={[styles.header, {backgroundColor: '#20B2AA'}]}>
                     <Text style={styles.headertxt}>react-native-webview</Text>
                 </View>

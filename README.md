@@ -11,10 +11,12 @@
 #### 1.安装MJRefresh
 **推荐:** 如果项目使用pod来管理iOS第三方依赖库，则在Podfile文件中添加以下代码：
 ```bash
-pod 'MJRefresh', '~> 3.1.15.7'
+pod 'MJRefresh', '~> 3.4.0'
 ```
 然后执行： **pod install**
 如果是手动引入MJRefresh，将MJRefresh文件夹引入到项目中，[MJRefresh库地址](https://github.com/CoderMJLee/MJRefresh)
+
+**推荐使用MJRefresh 3.4.0版本以上**
 
 #### 2.引入拓展文件
 
@@ -35,23 +37,20 @@ npm install --save react-native-refresh-ios
 ```
 MJRefreshExtension          mjRefresh框架的拓展文件
 RCTScrollView+MJRefresh     ScrollView,FlatList,SectionList等可滑动组件的拓展文件
-RCTWebView+MJRefresh        WebView组件的拓展文件
 RNCWebView+MJRefresh        react-native-webview中的WebView组件拓展文件
 ```
 根据你需要拓展MJRefresh到对应组件，选择对应文件夹拖入到你的项目中。
 注意：MJRefreshExtension文件夹必须拖入
 **例如：**
 1. 如果想让ScrollView，FlatList具备MJRefresh刷新能力，那么需要将**MJRefreshExtension**和**RCTScrollView+MJRefresh**文件夹引入到iOS项目中
-2. 如果想让WebView具备MJRefresh下拉刷新能力，那么需要将**MJRefreshExtension**和**RCTWebView+MJRefresh**文件夹引入到iOS项目中
-3. 如果想让ScrollView和WebView都具备MJRefresh下拉刷新能力， 则需要将**MJRefreshExtension**、**RCTScrollView+MJRefresh**、**RCTWebView+MJRefresh**或**RNCWebView+MJRefresh**文件夹引入到iOS项目中
+2. 如果想让WebView具备MJRefresh下拉刷新能力，那么需要将**MJRefreshExtension**和**RNCWebView+MJRefresh**文件夹引入到iOS项目中
+3. 如果想让ScrollView和WebView都具备MJRefresh下拉刷新能力， 则需要将**MJRefreshExtension**、**RCTScrollView+MJRefresh**、**RNCWebView+MJRefresh**文件夹引入到iOS项目中
 
 
 * * *
 **特别说明：**
 
-由于iOS13以后，苹果已经不允许再使用UIWebView了，同时React Native团队也推荐我们使用社区提供的[react-native-webview](https://www.npmjs.com/package/react-native-webview)代替React-Native中的WebView。事实上， 在React-Native 0.60以后的版本已经将WebView组件给剥离出去了。
-
-因此，在项目中如果使用了react-native-webview库，要使得其WebView具备MJRefresh下拉刷新能力，就需要将**RNCWebView+MJRefresh**文件夹引入到iOS项目中
+由于iOS13以后，苹果已经不允许再使用UIWebView了，同时React Native团队也推荐我们使用社区提供的[react-native-webview](https://www.npmjs.com/package/react-native-webview)代替React-Native中的WebView。事实上， 在React-Native 0.60以后的版本已经将WebView组件给剥离出去了。**本库已经废弃掉对RN提供的WebView组件的支持, 请使用[react-native-webview](https://www.npmjs.com/package/react-native-webview)**
 
 * * *
 
@@ -91,37 +90,8 @@ RNCWebView+MJRefresh        react-native-webview中的WebView组件拓展文件
 
 ##### 在WebView中的使用
 
-###### 1. React Native提供的WebView
+**说明:这里代指react-native-webview提供的WebView** 
 
-在WebView组件中，需要通过**nativeConfig**属性来添加, **这一点比较特殊, 需要特别关注**
-具体操作如下:
-```jsx
- <WebView
-    source={{uri: 'https://www.baidu.com'}}
-    nativeConfig={{
-        props:{
-                // 是否开启下拉刷新
-                enableMJRefresh: true,
-                // 指定刷新状态
-                // mjRefreshing: this.state.refreshing,
-                // 拖拽刷新时，触发的回调
-                // onMJRefresh: this.reloadData,
-                // 设置header样式
-                // mjHeaderStyle: {
-                //    // 指定属性
-                // }
-            }
-    }}
- />
-```
-**如上，只需要一行代码即可实现网页的下拉刷新功能。**
-
-同时，本库也提供像为ScrollView组件提供的属性一样提供**mjRefreshing**、**onMJRefresh**和**mjHeaderStyle**属性。
-
-
-###### 2. react-native-webview提供的WebView
-
-为WebView提供了与ScrollView一致的属性。
 例如：
 ```jsx
 import { WebView } from 'react-native-webview';

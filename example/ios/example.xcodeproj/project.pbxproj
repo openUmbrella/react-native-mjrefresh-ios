@@ -47,8 +47,6 @@
 		FA5D3ACE2357FD280015AC75 /* RCTScrollViewManager+MJRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5D3AC22357FD270015AC75 /* RCTScrollViewManager+MJRefresh.m */; };
 		FA5D3ACF2357FD280015AC75 /* RNCWebView+MJRfresh.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5D3AC42357FD270015AC75 /* RNCWebView+MJRfresh.m */; };
 		FA5D3AD02357FD280015AC75 /* RNCWebViewManager+MJRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5D3AC72357FD270015AC75 /* RNCWebViewManager+MJRefresh.m */; };
-		FA5D3AD12357FD280015AC75 /* RCTWebViewManager+MJRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5D3AC92357FD270015AC75 /* RCTWebViewManager+MJRefresh.m */; };
-		FA5D3AD22357FD280015AC75 /* RCTWebView+MJRfresh.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5D3ACC2357FD270015AC75 /* RCTWebView+MJRfresh.m */; };
 		FA96BC32234DCB7A0081289F /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA96BC2F234DC9D00081289F /* libRNGestureHandler.a */; };
 		FA96BC33234DCB830081289F /* libRNReanimated.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE49BDC233EF56D000C83E6 /* libRNReanimated.a */; };
 /* End PBXBuildFile section */
@@ -406,10 +404,6 @@
 		FA5D3AC52357FD270015AC75 /* RNCWebViewManager+MJRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNCWebViewManager+MJRefresh.h"; sourceTree = "<group>"; };
 		FA5D3AC62357FD270015AC75 /* RNCWebView+MJRfresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNCWebView+MJRfresh.h"; sourceTree = "<group>"; };
 		FA5D3AC72357FD270015AC75 /* RNCWebViewManager+MJRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RNCWebViewManager+MJRefresh.m"; sourceTree = "<group>"; };
-		FA5D3AC92357FD270015AC75 /* RCTWebViewManager+MJRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTWebViewManager+MJRefresh.m"; sourceTree = "<group>"; };
-		FA5D3ACA2357FD270015AC75 /* RCTWebView+MJRfresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCTWebView+MJRfresh.h"; sourceTree = "<group>"; };
-		FA5D3ACB2357FD270015AC75 /* RCTWebViewManager+MJRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCTWebViewManager+MJRefresh.h"; sourceTree = "<group>"; };
-		FA5D3ACC2357FD270015AC75 /* RCTWebView+MJRfresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTWebView+MJRfresh.m"; sourceTree = "<group>"; };
 		FA96BC29234DC9D00081289F /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
 		FAE49BD6233EF56D000C83E6 /* RNReanimated.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNReanimated.xcodeproj; path = "../node_modules/react-native-reanimated/ios/RNReanimated.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -699,7 +693,6 @@
 			children = (
 				FA5D3AA02356C62B0015AC75 /* MJRefreshExtension */,
 				FA5D3ABE2357FD270015AC75 /* RCTScrollView+MJRefresh */,
-				FA5D3AC82357FD270015AC75 /* RCTWebView+MJRefresh */,
 				FA5D3AC32357FD270015AC75 /* RNCWebView+MJRefresh */,
 			);
 			name = Lib;
@@ -746,18 +739,6 @@
 			);
 			name = "RNCWebView+MJRefresh";
 			path = "../../../../ios/RNCWebView+MJRefresh";
-			sourceTree = "<group>";
-		};
-		FA5D3AC82357FD270015AC75 /* RCTWebView+MJRefresh */ = {
-			isa = PBXGroup;
-			children = (
-				FA5D3ACA2357FD270015AC75 /* RCTWebView+MJRfresh.h */,
-				FA5D3ACC2357FD270015AC75 /* RCTWebView+MJRfresh.m */,
-				FA5D3ACB2357FD270015AC75 /* RCTWebViewManager+MJRefresh.h */,
-				FA5D3AC92357FD270015AC75 /* RCTWebViewManager+MJRefresh.m */,
-			);
-			name = "RCTWebView+MJRefresh";
-			path = "../../../../ios/RCTWebView+MJRefresh";
 			sourceTree = "<group>";
 		};
 		FA96BC2A234DC9D00081289F /* Products */ = {
@@ -1384,8 +1365,6 @@
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				FA5D3AD02357FD280015AC75 /* RNCWebViewManager+MJRefresh.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				FA5D3AD12357FD280015AC75 /* RCTWebViewManager+MJRefresh.m in Sources */,
-				FA5D3AD22357FD280015AC75 /* RCTWebView+MJRfresh.m in Sources */,
 				FA5D3AAF2356C62B0015AC75 /* XYRefreshGifHeader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
