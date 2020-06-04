@@ -236,9 +236,9 @@
 		FA990366247F8A6400C8AE00 /* RNCWebView+MJRefresh */ = {
 			isa = PBXGroup;
 			children = (
+				FA990369247F8A6400C8AE00 /* RNCWebView+MJRfresh.h */,
 				FA990367247F8A6400C8AE00 /* RNCWebView+MJRfresh.m */,
 				FA990368247F8A6400C8AE00 /* RNCWebViewManager+MJRefresh.h */,
-				FA990369247F8A6400C8AE00 /* RNCWebView+MJRfresh.h */,
 				FA99036A247F8A6400C8AE00 /* RNCWebViewManager+MJRefresh.m */,
 			);
 			name = "RNCWebView+MJRefresh";
@@ -248,9 +248,9 @@
 		FA99036B247F8A6400C8AE00 /* RCTScrollView+MJRefresh */ = {
 			isa = PBXGroup;
 			children = (
+				FA99036E247F8A6400C8AE00 /* RCTScrollView+MJRefresh.h */,
 				FA99036C247F8A6400C8AE00 /* RCTScrollView+MJRefresh.m */,
 				FA99036D247F8A6400C8AE00 /* RCTScrollViewManager+MJRefresh.h */,
-				FA99036E247F8A6400C8AE00 /* RCTScrollView+MJRefresh.h */,
 				FA99036F247F8A6400C8AE00 /* RCTScrollViewManager+MJRefresh.m */,
 			);
 			name = "RCTScrollView+MJRefresh";

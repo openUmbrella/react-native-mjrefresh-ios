@@ -174,7 +174,7 @@ mjHeaderStyle需要指定一个对象，通过这个对象来的属性来设置�
 | hideTimeLabel | 是否隐藏时间标签  | Boolean | 默认为 false |  |
 | hideStateLabel | 是否隐藏显示状态文字的标签  | Boolean | 默认为 false |  |
 | labelImageGap |  菊花/箭头/图片 与 文字 的间距 | Number | 如果header类型是 gifTop 则默认值为0, 其他情况下默认值为20 | 单位pt |
-| stateLabelStyle | 显示状态文字的标签样式 | Object | **Object.fontSize** 字体大小<br>**Object.color** 字体颜色，可以使用十六进制色号 如: #1232fa, 也可以使用 rgb(255,2,34) 以及带不透明度的 rgba(255,22,2,0.5)，如果色号格式不正确,则返回黑色 | fontSize默认值14pt<br>color默认值#5A5A5A |
+| stateLabelStyle | 显示状态文字的标签样式 | Object | **Object.fontSize** 字体大小<br>**Object.bold** 字体粗细（true/false）<br>**Object.color** 字体颜色，可以使用十六进制色号 如: #1232fa, 也可以使用 rgb(255,2,34) 以及带不透明度的 rgba(255,22,2,0.5)，如果色号格式不正确,则返回黑色 | fontSize默认值14pt<br>color默认值#5A5A5A |
 | timeLabelStyle | 显示上次刷新时间的标签样式 | 同上 | 同上 | 同上 |
 | stateTitle | 状态标签在各个状态下显示的文字 | Object | **Object.idle** 开始下拉时的状态文字<br>**Object.pulling** 下拉超过刷新阈值, 如果放手则触发刷新的状态文字<br>**Object.refreshing** 正在刷新状态文字<br>**Object.willRefresh** 将要刷新状态文字<br>**Object.noMoreData** 没有更多数据状态(适用于上拉加载更多)文字 | 1.各个属性值类型为字符串 |
 | ignoredInsetTop | 刷新组件距离scrollview的内容顶部的距离 | Number | 默认值为 0 |  |
@@ -191,7 +191,7 @@ mjHeaderStyle需要指定一个对象，通过这个对象来的属性来设置�
 | gifImages | 指定各个状态下的动画图片 | Object | Object属性值与headerStyle的gifImages相同 | 1. 只有footerType为 autoGif backGif 类型才有效<br>2. 使用方法同headerType中的gifImages属性的使用方法一致, 具体详情请看之前描述 |
 | labelImageGap |  菊花/箭头/图片 与 文字 的间距 | Number | 如果header类型是 gifTop 则默认值为0, 其他情况下默认值为20 | 单位pt |
 | hideStateLabel | 是否隐藏显示状态文字的标签  | Boolean | 默认为 false |  |
-| stateLabelStyle | 显示状态文字的标签样式 | Object | **Object.fontSize** 字体大小<br>**Object.color** 字体颜色，可以使用十六进制色号 如: #1232fa, 也可以使用 rgb(255,2,34) 以及带不透明度的 rgba(255,22,2,0.5)，如果色号格式不正确,则返回黑色 | fontSize默认值14pt<br>color默认值#5A5A5A |
+| stateLabelStyle | 显示状态文字的标签样式 | Object | **Object.fontSize** 字体大小<br>**Object.bold** 字体粗细（true/false）<br>**Object.color** 字体颜色，可以使用十六进制色号 如: #1232fa, 也可以使用 rgb(255,2,34) 以及带不透明度的 rgba(255,22,2,0.5)，如果色号格式不正确,则返回黑色 | fontSize默认值14pt<br>color默认值#5A5A5A |
 | stateTitle | 状态标签在各个状态下显示的文字 | Object | 各个状态值与headerStyle的stateTitle相同 | 1.idle状态autoXX 类型下显示: 点击或上拉加载更多 backXX 类型下显示: 上拉可以加载更多<br>pulling状态，footerType为 backNormal backGif 时有效， 默认显示: 松开立即加载更多 |
 | ignoredInsetBottom | 上拉加载组件距离ScrollView的内容底部距离 | Number | 只有footerType为 backNormal backGif 时才有效 | 默认为0 |
 | autoChangeAlpha | 是否在上拉拖拽时, 上拉加载组件自动改变不透明度 | Boolean | 默认值 false |  |

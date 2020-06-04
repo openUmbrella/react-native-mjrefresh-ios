@@ -250,14 +250,25 @@
   }
 }
 -(void)setLabelStyleWithLable: (UILabel *)label styles: (NSDictionary *)styles{
-  // styles里面可用的值只有(暂且) fontSize color
+  // styles里面可用的值只有(暂且) fontSize bold color
   NSNumber *fontSize = styles[@"fontSize"];
+  NSNumber *bold = styles[@"bold"];
   NSString *color = styles[@"color"];
   if (fontSize) {
-    label.font = [UIFont boldSystemFontOfSize:fontSize.floatValue];
+    if (bold.boolValue) {
+      label.font = [UIFont boldSystemFontOfSize:fontSize.floatValue];
+    }else{
+      label.font = [UIFont systemFontOfSize:fontSize.floatValue];
+    }
+  }else{
+    if (bold.boolValue) {
+      label.font = [UIFont boldSystemFontOfSize: 14];
+    }else{
+      label.font = [UIFont systemFontOfSize: 14];
+    }
   }
   if (color) {
-    UIColor *textcolor = [UIColor xy_colorWithColorString: color];
+    UIColor *textcolor = [UIColor xy_colorWithColorString:color];
     label.textColor = textcolor;
   }
 }
